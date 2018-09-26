@@ -1,0 +1,173 @@
+/*
+* Reset
+*/
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*
+* General
+*/
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    height: 100vh;
+    background-color: #23b0a8;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+}
+
+.row {
+    display: flex;
+    flex-direction: row
+}
+
+.column {
+    display: flex;
+    flex-direction: column
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+/*
+* Main
+*/
+
+.calculator {
+    width: 25rem;
+    height: 37.5rem;
+    box-shadow: 3px 3px 4px 1px rgba(118, 119, 123, 0.35);
+    margin: auto;
+}
+
+.output {
+    height: 30%;
+    color: white; 
+    background-color: white;
+    position: relative;
+    box-shadow: 0px 1px 3px 0px rgba(118, 119, 123, 0.3);
+}
+
+.output-primary, .output-secondary {
+    height: 15%;  
+}
+
+.input {
+    height: 70%;
+    font-size: 1.5rem;
+}
+
+.numbers {
+    width: 75%;
+    color: black;
+    background-color: #EEEEEE;
+}
+
+.num {
+    width: 33.33333333%;
+    height: 25%;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.num:hover {
+    background-color: #2d39421a;
+}
+
+.actions {
+    width: 25%;
+    background-color: #ffd046;
+}
+
+.action {
+    width: 100%;
+    height: 20%;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.action:hover {
+    background-color: #f0c442;
+}
+
+.num, .action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*
+* Buttons
+*/
+#dot {
+    font-weight: normal
+}
+
+/*
+* Media queries
+*/
+
+@media screen and (max-width: 640px) {
+    body {
+        display: initial;
+    }
+
+    .calculator {
+        height: 100vh;
+        width: auto;
+    }
+}
