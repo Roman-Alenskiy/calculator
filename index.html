@@ -10,33 +10,35 @@
 
 <body>
     <div class="calculator">
-        <div class="output">
-            <div class="output-secondary">
-            </div>
+        <div class="output-field">
             <div class="output-primary">
+                <input type="text" autofocus>
+            </div>
+            <div class="output-secondary">
+                <input type="text" readonly>
             </div>
         </div>
-        <div class="row input">
-            <div class="row wrap numbers">
-                <div class="num">7</div>
-                <div class="num">8</div>
-                <div class="num">9</div>
-                <div class="num">4</div>
-                <div class="num">5</div>
-                <div class="num">6</div>
-                <div class="num">1</div>
-                <div class="num">2</div>
-                <div class="num">3</div>
-                <div class="num" id="dot">.</div>
-                <div class="num">0</div>
-                <div class="num">DEL</div>
+        <div class="row input-field">
+            <div class="row wrap num-field">
+                <div class="num content-output">7</div>
+                <div class="num content-output">8</div>
+                <div class="num content-output">9</div>
+                <div class="num content-output">4</div>
+                <div class="num content-output">5</div>
+                <div class="num content-output">6</div>
+                <div class="num content-output">1</div>
+                <div class="num content-output">2</div>
+                <div class="num content-output">3</div>
+                <div class="num content-output" id="dot">.</div>
+                <div class="num content-output">0</div>
+                <div id="delete">DEL</div>
             </div>
-            <div class="column actions">
-                <div class="action">/</div>
-                <div class="action">*</div>
-                <div class="action">–</div>
-                <div class="action">+</div>
-                <div class="action">=</div>
+            <div class="column operator-field">
+                <div class="operator content-output">/</div>
+                <div class="operator content-output">*</div>
+                <div class="operator content-output">-</div>
+                <div class="operator content-output">+</div>
+                <div id="equally">=</div>
             </div>
         </div>
     </div>

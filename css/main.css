@@ -94,57 +94,77 @@ body {
     margin: auto;
 }
 
-.output {
+.output-field {
     height: 30%;
-    color: white; 
+    color: black; 
     background-color: white;
     position: relative;
     box-shadow: 0px 1px 3px 0px rgba(118, 119, 123, 0.3);
 }
 
 .output-primary, .output-secondary {
-    height: 15%;  
+    padding: 0 1rem;
 }
 
-.input {
+.output-primary {
+    height: 60%;
+    font-size: 3rem;
+}
+
+.output-secondary {
+    height: 40%;
+    font-size: 2rem;
+    color: rgba(0, 0, 0, 0.5)
+}
+.output-primary input, .output-secondary input {
+    height: 100%;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: right;
+    font: inherit;
+    color: inherit
+}
+
+.input-field {
     height: 70%;
     font-size: 1.5rem;
 }
 
-.numbers {
+.num-field {
     width: 75%;
     color: black;
     background-color: #EEEEEE;
 }
 
-.num {
+.num, #delete {
     width: 33.33333333%;
     height: 25%;
     transition: all 0.4s;
     cursor: pointer;
 }
 
-.num:hover {
+.num:hover, #delete:hover {
     background-color: #2d39421a;
 }
 
-.actions {
+.operator-field {
     width: 25%;
     background-color: #ffd046;
 }
 
-.action {
+.operator, #equally {
     width: 100%;
     height: 20%;
     transition: all 0.4s;
     cursor: pointer;
 }
 
-.action:hover {
+.operator:hover, #equally:hover {
     background-color: #f0c442;
 }
 
-.num, .action {
+.num, .operator, #equally, #delete {
     display: flex;
     justify-content: center;
     align-items: center;
