@@ -8,6 +8,7 @@ const deleteButton = document.querySelector('#delete')
 
 const operandsRegExp = /[\d\.]/
 const operatorsRegExp = /[\+\-\*\/]/
+const generalRegExp = /[\+\-\*\/\d\.]/
 
 let exp = ""
 let globalIndex = 0
@@ -20,10 +21,24 @@ contentOutputs.forEach(function(contentOutput) {
 })
 equallyButton.addEventListener('click', answerToOutputPrimary)
 deleteButton.addEventListener('click', allClear)
-document.addEventListener('keydown', keyActions)
-outputPrimary.addEventListener('input', inputProcessing) // for directly input from keyboard
+document.addEventListener('keydown', inputFromKeyboard)
 
 // Main functions
+function inputFromKeyboard(event) {
+    if (generalRegExp.test(event.key)) {
+        outputPrimary.value += event.key
+        inputProcessing()
+    }
+
+    switch(event.key) {
+        case 'Enter': 
+            answerToOutputPrimary()
+            break
+        case 'Backspace':
+            allClear()
+            break
+    }
+}
 
 function inputFromScreen(event) {
     outputPrimary.value += event.target.textContent
@@ -103,18 +118,6 @@ function answerToOutputPrimary() {
     if (!operatorsRegExp.test(outputPrimary.value)) {outputPrimary.focus(); return}
     clear()
     outputPrimary.value = operands[0] = outputSecondary.value
-}
-
-function keyActions(e) {
-    switch(e.key) {
-        case 'Enter': 
-            answerToOutputPrimary()
-            break
-        case 'Backspace':
-            allClear()
-            break
-        
-    }
 }
 
 function allClear() {
