@@ -24,8 +24,6 @@ contentOutputs.forEach(function(contentOutput) {
 equallyButton.addEventListener('mousedown', answerToOutputPrimary)
 deleteButton.addEventListener('mousedown', onDeleteDown)
 deleteButton.addEventListener('mouseup', onDeleteUp)
-deleteButton.addEventListener('touchstart', onDeleteDown)
-deleteButton.addEventListener('touchend', onDeleteUp)
 document.addEventListener('keydown', inputFromKeyboard)
 
 // Handling holds and clicks
