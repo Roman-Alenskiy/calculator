@@ -11,17 +11,36 @@ const operatorsRegExp = /[\+\-\*\/]/
 const generalRegExp = /[\+\-\*\/\d\.]/
 
 let exp = ""
-let globalIndex = 0
+let operationIndex = 0
 let operands = []
 let operators = []
 
+let holdTimer
+
 // Event listeners
 contentOutputs.forEach(function(contentOutput) {
-    contentOutput.addEventListener('click', inputFromScreen)
+    contentOutput.addEventListener('mousedown', inputFromScreen)
 })
-equallyButton.addEventListener('click', answerToOutputPrimary)
-deleteButton.addEventListener('click', allClear)
+equallyButton.addEventListener('mousedown', answerToOutputPrimary)
+deleteButton.addEventListener('mousedown', onDeleteDown)
+deleteButton.addEventListener('mouseup', onDeleteUp)
+deleteButton.addEventListener('touchstart', onDeleteDown)
+deleteButton.addEventListener('touchend', onDeleteUp)
 document.addEventListener('keydown', inputFromKeyboard)
+
+// Handling holds and clicks
+function onDeleteDown() {
+    holdTimer = window.setTimeout(onDeleteHold, 1000)
+}
+
+function onDeleteUp() {
+    if (holdTimer) window.clearTimeout(holdTimer) // if clicking 'DEL' button, then clear last character
+    lastClear()
+}
+
+function onDeleteHold() {
+    allClear() // if holding 'DEL' - clear all
+}
 
 // Main functions
 function inputFromKeyboard(event) {
@@ -35,7 +54,7 @@ function inputFromKeyboard(event) {
             answerToOutputPrimary()
             break
         case 'Backspace':
-            allClear()
+            lastClear()
             break
     }
 }
@@ -57,22 +76,19 @@ function updateExp() {
 
 function parsingExp() {
         let expLast = exp[exp.length - 1]  
-    
         if (operandsRegExp.test(expLast)) {
-            if (operands[globalIndex] === undefined) {operands[globalIndex] = ''}
-            operands[globalIndex] += expLast
+            if (operands[operationIndex] === undefined) {operands[operationIndex] = ''}
+            operands[operationIndex] += expLast
             console.log(operands)
         } else if (operatorsRegExp.test(expLast)) {
-            operators[globalIndex] = expLast
+            operators[operationIndex] = expLast
             console.log(operators)
-            globalIndex++
+            operationIndex++
         }
 }
 
 function outputAnswer(answer) {
-    if (!(Number.isNaN(answer))) {
-        outputSecondary.value = answer
-    }
+    outputSecondary.value = answer
 }
 
 function calculateAnswer() {
@@ -87,6 +103,7 @@ function calculateAnswer() {
             let index = operatorsClone.findIndex(findHelper)
             let firstOperand = parseFloat(operandsClone[index])
             let secondOperand = parseFloat(operandsClone[index+1])
+            if (Number.isNaN(secondOperand)) {return}
             switch(operator) {
                 case '*': 
                     operationResult = firstOperand * secondOperand
@@ -115,22 +132,49 @@ function calculateAnswer() {
 
 function answerToOutputPrimary() {
     if (!operatorsRegExp.test(outputPrimary.value)) {return}
-    clear()
+    clearVars()
     outputPrimary.value = operands[0] = outputSecondary.value
 }
 
 function allClear() {
     exp = ""
-    globalIndex = 0
+    operationIndex = 0
     operands = []
     operators = []
     outputPrimary.value = ''
     outputSecondary.value = ''
 }
 
-function clear() {
+function lastClear() {
+    let opValLastIndex = outputPrimary.value.length - 1
+    let opValLast = outputPrimary.value[opValLastIndex]
+    if (operandsRegExp.test(opValLast)) {
+        let operandsLastIndex = operands.length - 1
+        let operandsLast = operands[operandsLastIndex]
+        operands[operandsLastIndex] = operandsLast.slice(0, operandsLast.length - 1)
+        if (operands[operandsLastIndex] === '') {operands.pop()}
+        console.log(operands)
+    } else if (operatorsRegExp.test(opValLast)) {
+        operators.pop()
+        console.log(operators)
+        operationIndex--
+    }
+    outputPrimary.value = outputPrimary.value.slice(0, opValLastIndex)
+    if (!(outputPrimary.value === '')) {
+        outputAnswer(calculateAnswer())
+    } else {
+        clearOutputs()
+    }
+}
+
+function clearVars() {
     exp = ""
-    globalIndex = 0
+    operationIndex = 0
     operands = []
     operators = []
+}
+
+function  clearOutputs() {
+    outputPrimary.value = ''
+    outputSecondary.value = '' 
 }
