@@ -12,7 +12,7 @@ const generalRegExp = /[\+\-\*\/\d\.]/
 
 let exp = ""
 let operationIndex = 0
-let operands = []
+let operands = ['']
 let operators = []
 
 let holdTimer
@@ -42,12 +42,13 @@ function onDeleteHold() {
 
 // Main functions
 function inputFromKeyboard(event) {
-    if (generalRegExp.test(event.key) && !(/[f]/i.test(event.key))) { // second test() is need to prevent F1-F12 keys input
-        outputPrimary.value += event.key
+    let eventKey = event.key
+    if (generalRegExp.test(event.key) && !(/[f]/i.test(event.key)) && inputIsValid(eventKey)) { // second test() is need to prevent F1-F12 keys input
+        outputPrimary.value += eventKey
         inputProcessing()
     }
 
-    switch(event.key) {
+    switch(eventKey) {
         case 'Enter': 
             answerToOutputPrimary()
             break
@@ -58,13 +59,28 @@ function inputFromKeyboard(event) {
 }
 
 function inputFromScreen(event) {
-    outputPrimary.value += event.target.textContent
-    inputProcessing()
+    let eventTextContent = event.target.textContent
+    if (inputIsValid(eventTextContent)) {
+        outputPrimary.value += eventTextContent
+        inputProcessing()
+    }
+}
+
+function inputIsValid(eventContent) {
+    let opVal = outputPrimary.value
+    let opValLastIndex = opVal.length - 1
+    let opValLast = outputPrimary.value[opValLastIndex]
+    if (((opVal === "" || /[\+\*\/\.]/.test(opValLast)) && /[\+\*\/\.]/.test(eventContent)) || ((/[\-]/.test(opValLast)) && (/[\-]/.test(eventContent)))) {
+        return false
+    } else {
+        return true
+    }
 }
 
 function inputProcessing() {
     updateExp() 
     parsingExp()
+    if (outputPrimary.value === '-') {return}
     outputAnswer(calculateAnswer())
 }
 
@@ -73,16 +89,20 @@ function updateExp() {
 }
 
 function parsingExp() {
-        let expLast = exp[exp.length - 1]  
-        if (operandsRegExp.test(expLast)) {
-            if (operands[operationIndex] === undefined) {operands[operationIndex] = ''}
-            operands[operationIndex] += expLast
-            console.log(operands)
-        } else if (operatorsRegExp.test(expLast)) {
-            operators[operationIndex] = expLast
-            console.log(operators)
-            operationIndex++
-        }
+    let expLast = exp[exp.length - 1]  
+    if (operands[operationIndex] === undefined) {operands[operationIndex] = ''}
+    if ((expLast === '-') && (operands[operationIndex] === '')) {
+        operands[operationIndex] = '-'
+        return
+    }
+    if (operandsRegExp.test(expLast)) {
+        operands[operationIndex] += expLast
+        console.log(operands)
+    } else if (operatorsRegExp.test(expLast)) {
+        operators[operationIndex] = expLast
+        console.log(operators)
+        operationIndex++
+    }
 }
 
 function outputAnswer(answer) {
@@ -137,7 +157,7 @@ function answerToOutputPrimary() {
 function allClear() {
     exp = ""
     operationIndex = 0
-    operands = []
+    operands = ['']
     operators = []
     outputPrimary.value = ''
     outputSecondary.value = ''
@@ -146,7 +166,7 @@ function allClear() {
 function lastClear() {
     let opValLastIndex = outputPrimary.value.length - 1
     let opValLast = outputPrimary.value[opValLastIndex]
-    if (operandsRegExp.test(opValLast)) {
+    if (operandsRegExp.test(opValLast) || (opValLast === '-' && operatorsRegExp.test(outputPrimary.value[opValLastIndex - 1]))) {
         let operandsLastIndex = operands.length - 1
         let operandsLast = operands[operandsLastIndex]
         operands[operandsLastIndex] = operandsLast.slice(0, operandsLast.length - 1)
@@ -161,14 +181,14 @@ function lastClear() {
     if (!(outputPrimary.value === '')) {
         outputAnswer(calculateAnswer())
     } else {
-        clearOutputs()
+        allClear()
     }
 }
 
 function clearVars() {
     exp = ""
     operationIndex = 0
-    operands = []
+    operands = ['']
     operators = []
 }
 
