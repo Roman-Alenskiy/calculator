@@ -25,7 +25,7 @@ document.addEventListener('keydown', inputFromKeyboard)
 
 // Main functions
 function inputFromKeyboard(event) {
-    if (generalRegExp.test(event.key)) {
+    if (generalRegExp.test(event.key) && !(/[f]/i.test(event.key))) { // second test() is need to prevent F1-F12 keys input
         outputPrimary.value += event.key
         inputProcessing()
     }
@@ -46,7 +46,6 @@ function inputFromScreen(event) {
 }
 
 function inputProcessing() {
-    outputPrimary.focus()
     updateExp() 
     parsingExp()
     outputAnswer(calculateAnswer())
@@ -115,7 +114,7 @@ function calculateAnswer() {
 }
 
 function answerToOutputPrimary() {
-    if (!operatorsRegExp.test(outputPrimary.value)) {outputPrimary.focus(); return}
+    if (!operatorsRegExp.test(outputPrimary.value)) {return}
     clear()
     outputPrimary.value = operands[0] = outputSecondary.value
 }
@@ -127,7 +126,6 @@ function allClear() {
     operators = []
     outputPrimary.value = ''
     outputSecondary.value = ''
-    outputPrimary.focus()
 }
 
 function clear() {
@@ -135,5 +133,4 @@ function clear() {
     globalIndex = 0
     operands = []
     operators = []
-    outputPrimary.focus()
 }
