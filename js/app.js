@@ -7,7 +7,7 @@ const equallyButton = document.querySelector('#equally')
 const deleteButton = document.querySelector('#delete')
 
 const operandsRegExp = /[\d\.]/
-const operatorsRegExp = /[\+\-\*\/]/
+const operatorsRegExp = /[\+\*\/]/
 const generalRegExp = /[\+\-\*\/\d\.]/
 
 let exp = ""
@@ -70,7 +70,7 @@ function inputIsValid(eventContent) {
     let opVal = outputPrimary.value
     let opValLastIndex = opVal.length - 1
     let opValLast = outputPrimary.value[opValLastIndex]
-    if (((opVal === "" || /[\+\*\/\.]/.test(opValLast)) && /[\+\*\/\.]/.test(eventContent)) || ((/[\-]/.test(opValLast)) && (/[\-]/.test(eventContent)))) {
+    if (((opVal === "" || /[\+\*\/\.]/.test(opValLast)) && /[\+\*\/\.]/.test(eventContent)) || ((/[\-]/.test(opValLast)) && (/[\-\+\*\/]/.test(eventContent)))) {
         return false
     } else {
         return true
@@ -91,7 +91,9 @@ function updateExp() {
 function parsingExp() {
     let expLast = exp[exp.length - 1]  
     if (operands[operationIndex] === undefined) {operands[operationIndex] = ''}
-    if ((expLast === '-') && (operands[operationIndex] === '')) {
+    if ((expLast === '-')) {
+        operators[operationIndex] = '+'
+        if (operands[operationIndex] !== '') {operationIndex++} // if condition is need for such cases: x*-y, x/-y to prevent creation extra empty elements in operands[] 
         operands[operationIndex] = '-'
         return
     }
@@ -114,42 +116,54 @@ function calculateAnswer() {
     let operationResult
     let operandsClone = operands.slice()
     let operatorsClone = operators.slice()
-    const operatorTypes = ['*', '/', '+', '-']
+    const firstPriorityRegExp = /[\*\/]/
+    let index = 0
 
-    operatorTypes.forEach(function(operator) {
-        while (operatorsClone.findIndex(findHelper) !== -1) {
-            let index = operatorsClone.findIndex(findHelper)
-            let firstOperand = parseFloat(operandsClone[index])
-            let secondOperand = parseFloat(operandsClone[index+1])
-            if (Number.isNaN(secondOperand)) {return}
-            switch(operator) {
-                case '*': 
-                    operationResult = firstOperand * secondOperand
-                    break
-                case '/': 
-                    operationResult = firstOperand / secondOperand
-                    break
-                case '+': 
-                    operationResult = firstOperand + secondOperand
-                    break
-                case '-': 
-                    operationResult = firstOperand - secondOperand
-                    break
-            }    
-            operandsClone.splice(index + 1, 1, operationResult)
-            operandsClone.splice(index, 1)
-            operatorsClone.splice(index, 1) 
+    // Performing first priority operations
+    function findHelper(el) {return firstPriorityRegExp.test(el)}
+    while (operatorsClone.findIndex(findHelper) !== -1) {
+        let operator = operatorsClone[index]
+        if (!(firstPriorityRegExp.test(operator))) {
+            index++
+            continue
         }
+        let firstOperand = parseFloat(operandsClone[index])
+        let secondOperand = parseFloat(operandsClone[index+1])
+        if (Number.isNaN(secondOperand)) {break}
+        switch(operator) {
+            case '*': 
+                operationResult = firstOperand * secondOperand
+                break
+            case '/': 
+                operationResult = firstOperand / secondOperand
+                break
+        }
+        operandsClone.splice(index + 1, 1, operationResult)
+        operandsClone.splice(index, 1)
+        operatorsClone.splice(index, 1)
+    }
+    
+    // Performing second priority operations
+    while (operatorsClone.length !== 0) {
+        let operator =  operatorsClone[0]
+        let firstOperand = parseFloat(operandsClone[0])
+        let secondOperand = parseFloat(operandsClone[1])
+        if (Number.isNaN(secondOperand)) {break}
+        switch(operator) {
+            case '+':
+                operationResult = firstOperand + secondOperand
+                break
+        }
+        operandsClone.splice(1, 1, operationResult)
+        operandsClone.splice(0, 1)
+        operatorsClone.splice(0, 1)
+    }    
 
-        function findHelper(el) {return el === operator}
-    })
-
-    answer = operandsClone[0]
+    answer = Math.floor(operandsClone[0] * 10000000) / 10000000
     return answer
 }
 
 function answerToOutputPrimary() {
-    if (!operatorsRegExp.test(outputPrimary.value)) {return}
     clearVars()
     outputPrimary.value = operands[0] = outputSecondary.value
 }
@@ -166,7 +180,7 @@ function allClear() {
 function lastClear() {
     let opValLastIndex = outputPrimary.value.length - 1
     let opValLast = outputPrimary.value[opValLastIndex]
-    if (operandsRegExp.test(opValLast) || (opValLast === '-' && operatorsRegExp.test(outputPrimary.value[opValLastIndex - 1]))) {
+    if (operandsRegExp.test(opValLast) || (opValLast === '-')) {
         let operandsLastIndex = operands.length - 1
         let operandsLast = operands[operandsLastIndex]
         operands[operandsLastIndex] = operandsLast.slice(0, operandsLast.length - 1)
@@ -177,11 +191,13 @@ function lastClear() {
         console.log(operators)
         operationIndex--
     }
-    outputPrimary.value = outputPrimary.value.slice(0, opValLastIndex)
-    if (!(outputPrimary.value === '')) {
-        outputAnswer(calculateAnswer())
-    } else {
+    opVal = outputPrimary.value = outputPrimary.value.slice(0, opValLastIndex)
+    if (opVal === '') {
         allClear()
+    } else if (opVal === '-') {
+        outputSecondary.value = ''
+    } else {
+        outputAnswer(calculateAnswer())
     }
 }
 
