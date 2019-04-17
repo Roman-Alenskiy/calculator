@@ -1,6 +1,6 @@
 const inputField = document.querySelector('.input-field')
 const numField = document.querySelector('.num-field')
-const contentOutputs = document.querySelectorAll('.content-output')
+const contentOutputs = document.querySelectorAll('.content-input')
 const outputPrimary = document.querySelector('input')
 const outputSecondary = document.querySelector('.output-secondary input')
 const equallyButton = document.querySelector('#equally')
