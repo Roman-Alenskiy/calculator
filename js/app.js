@@ -7,6 +7,7 @@ const state = {
     this.operands = []
     this.operators = []
     this.answer = ''
+    this.isParsingSameNumber = false
   },
   update(updatedProps) {
     Object.keys(updatedProps).forEach((prop) => {
@@ -40,75 +41,78 @@ function inputIsValid(input) {
 }
 
 function expressionParsing() {
-  let { operands, operators } = state
+  const { expression } = state
+  const expressionArr = [...expression]
+  const operands = []
+  const operators = []
   let isParsingSameNumber = false
-  const expressionArr = [...state.expression]
 
   expressionArr.forEach((element, index) => {
-    const operandsWithoutLast = operands.slice(0, operands.length - 1) || []
-    const lastOperand = operands[operands.length - 1] || ''
-
     if (/\d/.test(element)) {
       if (expressionArr[index - 1]) {
         if (expressionArr[index - 1] === '-') {
-          operands = [...operands, `-${element}`]
+          operands.push(`-${element}`)
           if (expressionArr[index - 2] && /\d/.test(expressionArr[index - 2])) {
-            operators = [...operators, '+']
+            operators.push('+')
           }
           isParsingSameNumber = true
           return
         }
 
         if (expressionArr[index - 1] === '.') {
-          operands = [...operandsWithoutLast, `${lastOperand}.${element}`]
-
+          operands[operands.length - 1] = `${operands[operands.length - 1]}.${element}`
           return
         }
       }
 
       if (element !== '-' && element !== '.') {
         if (isParsingSameNumber) {
-          operands = [...operandsWithoutLast, `${lastOperand}${element}`]
+          operands[operands.length - 1] = `${operands[operands.length - 1]}${element}`
         } else {
-          operands = [...operands, element]
+          operands.push(element)
           isParsingSameNumber = true
         }
       }
     } else if (/[+*/]/.test(element)) {
       isParsingSameNumber = false
-      operators = [...operators, element]
+      operators.push(element)
     }
   })
 
-  state.update({ operators, operands })
+  state.update({ operators, operands, isParsingSameNumber })
 }
 
 function calculateAnswer() {
-  const { operators, operands } = state
+  const operands = [...state.operands]
+  const operators = [...state.operators]
   let operationIndex = 0
   let operationResult = null
 
   // Performing first priority operations
-  while (operators.some((operator) => { return /[*/]/.test(operator) })) {
+  while (operators.includes('/') || operators.includes('*')) {
     const operator = operators[operationIndex]
     const firstOperand = parseFloat(operands[operationIndex])
     const secondOperand = parseFloat(operands[operationIndex + 1])
 
-    if (secondOperand && (/[*/]/.test(operator))) {
-      switch(operator) {
-        case '*': 
+    if (Number.isNaN(secondOperand)) { break }
+
+    if (/[/*]/.test(operator)) {
+      switch (operator) {
+        case '*':
           operationResult = firstOperand * secondOperand
           break
-        case '/': 
+        case '/':
           operationResult = firstOperand / secondOperand
+          break
+        default:
           break
       }
 
       operands.splice(operationIndex, 2, operationResult)
       operators.splice(operationIndex, 1)
+    } else {
+      operationIndex += 1
     }
-
-    operationIndex += 1
   }
 
   // Performing lowest priority operations
@@ -118,9 +122,11 @@ function calculateAnswer() {
     const secondOperand = parseFloat(operands[1])
 
     if (secondOperand) {
-      switch(operator) {
+      switch (operator) {
         case '+':
           operationResult = firstOperand + secondOperand
+          break
+        default:
           break
       }
     }
@@ -139,7 +145,7 @@ function screenInputHandler(event) {
     const { expression } = state
     const newExpression = expression + input
     state.update({ expression: newExpression })
-    updateOutput('primary', state.expression)
+    updateOutput('primary', newExpression)
     expressionParsing()
     calculateAnswer()
   }
@@ -156,17 +162,16 @@ function keyboardInputHandler(event) {
         state.update({ expression: newExpression })
         updateOutput('primary', state.expression)
         expressionParsing()
+        calculateAnswer()
       }
       break
     }
 
     case input === 'Enter': {
-
       break
     }
 
     case input === 'Backspace': {
-      
       break
     }
     default:
@@ -183,7 +188,7 @@ contentInputs.forEach((contentInput) => {
   contentInput.addEventListener('click', screenInputHandler)
 })
 
-document.addEventListener('keypress', keyboardInputHandler)
+window.addEventListener('keypress', keyboardInputHandler)
 
 // ==============================
 // Exports

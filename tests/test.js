@@ -298,5 +298,12 @@ describe('Calculator', () => {
       calculateAnswer()
       expect(state.answer).to.equal('165.6080555')
     })
+
+    it('should calculate answer from "6*9-3/-6"', () => {
+      state.update({ operands: ['6', '9', '-3', '-6'] })
+      state.update({ operators: ['*', '+', '/'] })
+      calculateAnswer()
+      expect(state.answer).to.equal('54.5')
+    })
   })
 })
