@@ -28,6 +28,8 @@ function updateOutput(outputType, newValue) {
 // Main functions
 // ==============================
 function inputIsValid(input) {
+  if (/\d/.test(input)) return true
+
   const { expression } = state
   const expressionLastChar = expression[expression.length - 1]
   if (((expression === '' || /[+*/.]/.test(expressionLastChar)) && /[+*/.]/.test(input)) || ((/[-]/.test(expressionLastChar)) && (/[-+*/]/.test(input)))) {
@@ -81,8 +83,8 @@ function expressionParsing() {
 }
 
 
-function inputFromScreenHandling(e) {
-  const input = e.target.textContent
+function screenInputHandler(event) {
+  const input = event.target.textContent
   if (inputIsValid(input)) {
     const { expression } = state
     const newExpression = expression + input
@@ -92,14 +94,45 @@ function inputFromScreenHandling(e) {
   }
 }
 
+function keyboardInputHandler(event) {
+  const input = event.key
+
+  switch (true) {
+    case /[+\-*/.\d]/.test(input): {
+      if (inputIsValid(input)) {
+        const { expression } = state
+        const newExpression = expression + input
+        state.update({ expression: newExpression })
+        updateOutput('primary', state.expression)
+        expressionParsing()
+      }
+      break
+    }
+
+    case input === 'Enter': {
+
+      break
+    }
+
+    case input === 'Backspace': {
+      
+      break
+    }
+    default:
+      break
+  }
+}
+
 // ==============================
 // Event controller
 // ==============================
 const contentInputs = document.querySelectorAll('.content-input')
 
 contentInputs.forEach((contentInput) => {
-  contentInput.addEventListener('click', inputFromScreenHandling)
+  contentInput.addEventListener('click', screenInputHandler)
 })
+
+document.addEventListener('keypress', keyboardInputHandler)
 
 // ==============================
 // Exports
