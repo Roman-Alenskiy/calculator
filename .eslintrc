@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb-base",
+  "parser": "babel-eslint",
+  "rules": {
+    "semi": ["error", "never"],
+    "object-curly-newline": "off",
+    "no-console": "off",
+    "max-len":"warn"
+  }
+}
