@@ -6,6 +6,7 @@ const state = {
     this.expression = ''
     this.operands = []
     this.operators = []
+    this.answer = ''
   },
   update(updatedProps) {
     Object.keys(updatedProps).forEach((prop) => {
@@ -82,6 +83,55 @@ function expressionParsing() {
   state.update({ operators, operands })
 }
 
+function calculateAnswer() {
+  const { operators, operands } = state
+  let operationIndex = 0
+  let operationResult = null
+
+  // Performing first priority operations
+  while (operators.some((operator) => { return /[*/]/.test(operator) })) {
+    const operator = operators[operationIndex]
+    const firstOperand = parseFloat(operands[operationIndex])
+    const secondOperand = parseFloat(operands[operationIndex + 1])
+
+    if (secondOperand && (/[*/]/.test(operator))) {
+      switch(operator) {
+        case '*': 
+          operationResult = firstOperand * secondOperand
+          break
+        case '/': 
+          operationResult = firstOperand / secondOperand
+          break
+      }
+
+      operands.splice(operationIndex, 2, operationResult)
+      operators.splice(operationIndex, 1)
+    }
+
+    operationIndex += 1
+  }
+
+  // Performing lowest priority operations
+  while (operators.length !== 0) {
+    const operator = operators[0]
+    const firstOperand = parseFloat(operands[0])
+    const secondOperand = parseFloat(operands[1])
+
+    if (secondOperand) {
+      switch(operator) {
+        case '+':
+          operationResult = firstOperand + secondOperand
+          break
+      }
+    }
+
+    operands.splice(0, 2, operationResult)
+    operators.splice(0, 1)
+  }
+
+  const answer = (operands[0] !== undefined) ? (Math.floor(operands[0] * 10000000) / 10000000).toString(10) : ''
+  state.update({ answer })
+}
 
 function screenInputHandler(event) {
   const input = event.target.textContent
@@ -91,6 +141,7 @@ function screenInputHandler(event) {
     state.update({ expression: newExpression })
     updateOutput('primary', state.expression)
     expressionParsing()
+    calculateAnswer()
   }
 }
 
@@ -142,4 +193,5 @@ module.exports = {
   state,
   inputIsValid,
   expressionParsing,
+  calculateAnswer,
 }
