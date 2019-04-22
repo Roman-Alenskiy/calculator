@@ -103,6 +103,12 @@ function calculateAnswer() {
           break
         case '/':
           operationResult = firstOperand / secondOperand
+
+          // If happened division by zero
+          if (operationResult === Infinity || Number.isNaN(operationResult)) {
+            state.update({ answer: 'Division by zero' })
+            return
+          }
           break
         default:
           break

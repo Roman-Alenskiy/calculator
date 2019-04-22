@@ -258,6 +258,27 @@ describe('Calculator', () => {
       expect(state.answer).to.equal('208.1355')
     })
 
+    it('should calculate answer from "0/0"', () => {
+      state.update({ operands: ['0', '0'] })
+      state.update({ operators: ['/'] })
+      calculateAnswer()
+      expect(state.answer).to.equal('Division by zero')
+    })
+
+    it('should calculate answer from "10/0"', () => {
+      state.update({ operands: ['10', '0'] })
+      state.update({ operators: ['/'] })
+      calculateAnswer()
+      expect(state.answer).to.equal('Division by zero')
+    })
+
+    it('should calculate answer from "10/0+20"', () => {
+      state.update({ operands: ['10', '0', '20'] })
+      state.update({ operators: ['/', '+'] })
+      calculateAnswer()
+      expect(state.answer).to.equal('Division by zero')
+    })
+
     it('should calculate answer from "100/5"', () => {
       state.update({ operands: ['100', '5'] })
       state.update({ operators: ['/'] })
