@@ -34,7 +34,7 @@ function inputIsValid(input) {
 
   const { expression } = state
   const expressionLastChar = expression[expression.length - 1]
-  if (((expression === '' || /[+*/.]/.test(expressionLastChar)) && /[+*/.]/.test(input)) || ((/[-]/.test(expressionLastChar)) && (/[-+*/]/.test(input)))) {
+  if (((expression === '' || /[+*/.]/.test(expressionLastChar)) && /[+*/.]/.test(input)) || ((/[-]/.test(expressionLastChar)) && (/[-+*/.]/.test(input)))) {
     return false
   }
   return true
@@ -141,7 +141,7 @@ function calculateAnswer() {
     operators.splice(0, 1)
   }
 
-  const answer = (operands[0] !== undefined) ? (Math.floor(operands[0] * 10000000) / 10000000).toString(10) : ''
+  const answer = (operands[0] !== undefined && operands[0] !== null) ? (Math.floor(operands[0] * 10000000) / 10000000).toString(10) : ''
   state.update({ answer })
 }
 
@@ -154,6 +154,8 @@ function screenInputHandler(event) {
     updateOutput('primary', newExpression)
     expressionParsing()
     calculateAnswer()
+    const { answer } = state
+    updateOutput('secondary', answer)
   }
 }
 
