@@ -88,6 +88,12 @@ function calculateAnswer() {
   let operationIndex = 0
   let operationResult = null
 
+  // If there is only one operand
+  if (operands.length === 1) {
+    state.update({ answer: operands[0] })
+    return
+  }
+
   // Performing first priority operations
   while (operators.includes('/') || operators.includes('*')) {
     const operator = operators[operationIndex]
@@ -171,6 +177,8 @@ function keyboardInputHandler(event) {
         updateOutput('primary', state.expression)
         expressionParsing()
         calculateAnswer()
+        const { answer } = state
+        updateOutput('secondary', answer)
       }
       break
     }

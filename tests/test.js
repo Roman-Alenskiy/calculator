@@ -310,7 +310,7 @@ describe('Calculator', () => {
     it('should calculate answer from "11.000000199999999"', () => {
       state.update({ operands: ['11.00000019999999'] })
       calculateAnswer()
-      expect(state.answer).to.equal('11.0000001')
+      expect(state.answer).to.equal('11.00000019999999')
     })
 
     it('should calculate answer from "-560.21*-0.25-9.2/-0.36"', () => {
