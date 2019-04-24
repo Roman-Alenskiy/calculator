@@ -151,6 +151,11 @@ function calculateAnswer() {
   state.update({ answer })
 }
 
+function pushAnswer() {
+  const { answer } = state
+  state.update({ expression: answer, operands: [answer], operators: [], isParsingSameNumber: false })
+}
+
 function screenInputHandler(event) {
   const input = event.target.textContent
   if (inputIsValid(input)) {
@@ -184,6 +189,9 @@ function keyboardInputHandler(event) {
     }
 
     case input === 'Enter': {
+      const { answer } = state
+      pushAnswer()
+      updateOutput('primary', answer)
       break
     }
 
@@ -199,9 +207,16 @@ function keyboardInputHandler(event) {
 // Event controller
 // ==============================
 const contentInputs = document.querySelectorAll('.content-input')
+const equallyButton = document.querySelector('#equally')
 
 contentInputs.forEach((contentInput) => {
   contentInput.addEventListener('click', screenInputHandler)
+})
+
+equallyButton.addEventListener('click', () => {
+  const { answer } = state
+  pushAnswer()
+  updateOutput('primary', answer)
 })
 
 window.addEventListener('keypress', keyboardInputHandler)
