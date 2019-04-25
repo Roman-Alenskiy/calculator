@@ -19,31 +19,43 @@ describe('Calculator', () => {
       state.update({ expression: 'test' })
       expect(state.expression).to.equal('test')
     })
+
+    it('should update state with few values', () => {
+      expect(state.expression).to.equal('')
+      expect(state.operands).to.deep.equal([])
+      expect(state.operators).to.deep.equal([])
+      expect(state.isParsingSameNumber).to.be.false
+      state.update({ expression: '10*-20', operands: ['10', '-20'], operators: ['*'], isParsingSameNumber: true })
+      expect(state.expression).to.equal('10*-20')
+      expect(state.operands).to.deep.equal(['10', '-20'])
+      expect(state.operators).to.deep.equal(['*'])
+      expect(state.isParsingSameNumber).to.be.true
+    })
   })
 
   describe('#inputIsValid()', () => {
     describe('current state of expression - ""', () => {
-      it('should return true', () => {
+      it('should return true for "1"', () => {
         expect(inputIsValid(1)).to.be.true
       })
 
-      it('should return true', () => {
+      it('should return true for "-"', () => {
         expect(inputIsValid('-')).to.be.true
       })
 
-      it('should return false', () => {
+      it('should return false for "+"', () => {
         expect(inputIsValid('+')).to.be.false
       })
 
-      it('should return false', () => {
+      it('should return false for "*"', () => {
         expect(inputIsValid('*')).to.be.false
       })
 
-      it('should return false', () => {
+      it('should return false for "/"', () => {
         expect(inputIsValid('/')).to.be.false
       })
 
-      it('should return false', () => {
+      it('should return false for "."', () => {
         expect(inputIsValid('.')).to.be.false
       })
     })
@@ -51,27 +63,27 @@ describe('Calculator', () => {
     describe('current state of expression - "1"', () => {
       beforeEach(() => { state.update({ expression: '1' }) })
 
-      it('should return true', () => {
+      it('should return true for "1"', () => {
         expect(inputIsValid(1)).to.be.true
       })
 
-      it('should return true', () => {
+      it('should return true for "-"', () => {
         expect(inputIsValid('-')).to.be.true
       })
 
-      it('should return true', () => {
+      it('should return true for "+"', () => {
         expect(inputIsValid('+')).to.be.true
       })
 
-      it('should return true', () => {
+      it('should return true for "*"', () => {
         expect(inputIsValid('*')).to.be.true
       })
 
-      it('should return true', () => {
+      it('should return true for "/"', () => {
         expect(inputIsValid('/')).to.be.true
       })
 
-      it('should return true', () => {
+      it('should return true for "."', () => {
         expect(inputIsValid('.')).to.be.true
       })
     })
