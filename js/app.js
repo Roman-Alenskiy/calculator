@@ -206,20 +206,27 @@ function keyboardInputHandler(event) {
 // ==============================
 // Event controller
 // ==============================
-const contentInputs = document.querySelectorAll('.content-input')
-const equallyButton = document.querySelector('#equally')
 
-contentInputs.forEach((contentInput) => {
-  contentInput.addEventListener('click', screenInputHandler)
-})
+// This try/catch need to avoiding problems with test environment (mocha)
+try {
+  const contentInputs = document.querySelectorAll('.content-input')
+  const equallyButton = document.querySelector('#equally')
 
-equallyButton.addEventListener('click', () => {
-  const { answer } = state
-  pushAnswer()
-  updateOutput('primary', answer)
-})
 
-window.addEventListener('keypress', keyboardInputHandler)
+  contentInputs.forEach((contentInput) => {
+    contentInput.addEventListener('click', screenInputHandler)
+  })
+
+  equallyButton.addEventListener('click', () => {
+    const { answer } = state
+    pushAnswer()
+    updateOutput('primary', answer)
+  })
+
+  window.addEventListener('keypress', keyboardInputHandler)
+} catch {
+  console.log('node environment')
+}
 
 // ==============================
 // Exports
