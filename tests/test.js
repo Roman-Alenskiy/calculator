@@ -7,6 +7,7 @@ const {
   inputIsValid,
   expressionParsing,
   calculateAnswer,
+  deleteLastInput,
 } = require('../js/app')
 
 describe('Calculator', () => {
@@ -324,6 +325,128 @@ describe('Calculator', () => {
       state.update({ operators: ['*', '+', '/'] })
       calculateAnswer()
       expect(state.answer).to.equal('54.5')
+    })
+  })
+
+  describe('#deleteLastInput()', () => {
+    it('should delete last character from ""', () => {
+      deleteLastInput()
+      expect(state.operands).to.be.an('array').that.is.empty
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('')
+    })
+
+    it('should delete last character from "-"', () => {
+      state.update({ expression: '-' })
+      deleteLastInput()
+      expect(state.operands).to.be.an('array').that.is.empty
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('')
+    })
+
+    it('should delete last character from "1"', () => {
+      state.update({ expression: '1' })
+      state.update({ operands: ['1'] })
+      deleteLastInput()
+      expect(state.operands).to.be.an('array').that.is.empty
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('')
+    })
+
+
+    it('should delete last character from "1+"', () => {
+      state.update({ expression: '1+' })
+      state.update({ operands: ['1'] })
+      state.update({ operators: ['+'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1')
+    })
+
+    it('should delete last character from "1*"', () => {
+      state.update({ expression: '1*' })
+      state.update({ operands: ['1'] })
+      state.update({ operators: ['*'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1')
+    })
+
+    it('should delete last character from "1/"', () => {
+      state.update({ expression: '1/' })
+      state.update({ operands: ['1'] })
+      state.update({ operators: ['/'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1')
+    })
+
+    it('should delete last character from "1-"', () => {
+      state.update({ expression: '1-' })
+      state.update({ operands: ['1'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1')
+    })
+
+    it('should delete last character from "1."', () => {
+      state.update({ expression: '1.' })
+      state.update({ operands: ['1'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1')
+    })
+
+    it('should delete last character from "1.0"', () => {
+      state.update({ expression: '1.0' })
+      state.update({ operands: ['1.0'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1.')
+    })
+
+    it('should delete last character from "-1"', () => {
+      state.update({ expression: '-1' })
+      state.update({ operands: ['-1'] })
+      deleteLastInput()
+      expect(state.operands).to.be.an('array').that.is.empty
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('-')
+    })
+
+    it('should delete last character from "10"', () => {
+      state.update({ expression: '10' })
+      state.update({ operands: ['10'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['1'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('1')
+    })
+
+    it('should delete last character from "10-5"', () => {
+      state.update({ expression: '10-5' })
+      state.update({ operands: ['10', '-5'] })
+      state.update({ operators: ['+'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['10'])
+      expect(state.operators).to.be.an('array').that.is.empty
+      expect(state.expression).to.equal('10-')
+    })
+
+    it('should delete last character from "10+5"', () => {
+      state.update({ expression: '10+5' })
+      state.update({ operands: ['10', '5'] })
+      state.update({ operators: ['+'] })
+      deleteLastInput()
+      expect(state.operands).to.deep.equal(['10'])
+      expect(state.operators).to.deep.equal(['+'])
+      expect(state.expression).to.equal('10+')
     })
   })
 })

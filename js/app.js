@@ -156,18 +156,80 @@ function pushAnswer() {
   state.update({ expression: answer, operands: [answer], operators: [], isParsingSameNumber: false })
 }
 
-function screenInputHandler(event) {
-  const input = event.target.textContent
+function deleteLastInput() {
+  let { expression } = state
+  const expLastChar = expression.slice(-1)
+  const operands = [...state.operands]
+  const operators = [...state.operators]
+
+  const lastOperand = {
+    setup() {
+      this.value = operands[operands.length - 1] || ''
+      this.lastCharIndex = this.value.length - 1
+      this.lastChar = this.value[this.lastCharIndex]
+    },
+    cutLastChar() {
+      this.value = this.value.slice(0, this.lastCharIndex)
+      this.lastCharIndex = this.value.length - 1
+      this.lastChar = this.value[this.lastCharIndex]
+    },
+  }
+
+  lastOperand.setup()
+
+  if (/[\d]/.test(expLastChar)) {
+    lastOperand.cutLastChar()
+
+    if (lastOperand.lastChar === '.' || lastOperand.lastChar === '-') {
+      if (lastOperand.lastChar === '-' && operators[operators.length - 1] === '+') { operators.pop() }
+      lastOperand.cutLastChar()
+    }
+
+    if (lastOperand.value === '') {
+      operands.pop()
+    } else {
+      operands[operands.length - 1] = lastOperand.value
+    }
+  } else if (/[+*/]/.test(expLastChar)) {
+    operators.pop()
+  }
+
+  expression = expression.slice(0, expression.length - 1)
+
+  state.update({ expression, operands, operators })
+}
+
+function performInputHandling(input) {
   if (inputIsValid(input)) {
     const { expression } = state
     const newExpression = expression + input
     state.update({ expression: newExpression })
+
     updateOutput('primary', newExpression)
     expressionParsing()
     calculateAnswer()
+
     const { answer } = state
     updateOutput('secondary', answer)
   }
+}
+
+function performInputDeleting() {
+  deleteLastInput()
+
+  const { expression } = state
+  updateOutput('primary', expression)
+
+  expressionParsing()
+  calculateAnswer()
+
+  const { answer } = state
+  updateOutput('secondary', answer)
+}
+
+function screenInputHandler(event) {
+  const input = event.target.textContent
+  performInputHandling(input)
 }
 
 function keyboardInputHandler(event) {
@@ -175,16 +237,7 @@ function keyboardInputHandler(event) {
 
   switch (true) {
     case /[+\-*/.\d]/.test(input): {
-      if (inputIsValid(input)) {
-        const { expression } = state
-        const newExpression = expression + input
-        state.update({ expression: newExpression })
-        updateOutput('primary', state.expression)
-        expressionParsing()
-        calculateAnswer()
-        const { answer } = state
-        updateOutput('secondary', answer)
-      }
+      performInputHandling(input)
       break
     }
 
@@ -196,6 +249,7 @@ function keyboardInputHandler(event) {
     }
 
     case input === 'Backspace': {
+      performInputDeleting()
       break
     }
     default:
@@ -211,7 +265,7 @@ function keyboardInputHandler(event) {
 try {
   const contentInputs = document.querySelectorAll('.content-input')
   const equallyButton = document.querySelector('#equally')
-
+  const deleteButton = document.querySelector('#delete')
 
   contentInputs.forEach((contentInput) => {
     contentInput.addEventListener('click', screenInputHandler)
@@ -223,7 +277,9 @@ try {
     updateOutput('primary', answer)
   })
 
-  window.addEventListener('keypress', keyboardInputHandler)
+  deleteButton.addEventListener('click', () => performInputDeleting)
+
+  window.addEventListener('keydown', keyboardInputHandler)
 } catch {
   console.log('node environment')
 }
@@ -237,4 +293,5 @@ module.exports = {
   inputIsValid,
   expressionParsing,
   calculateAnswer,
+  deleteLastInput,
 }
