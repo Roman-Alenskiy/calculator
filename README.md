@@ -1,3 +1,7 @@
 # Calculator
 
-Simple on-screen calculator using JS, HTML, CSS
+On-screen calculator using native JS, HTML, CSS
+
+Testing with mocha + chai
+
+![Demonstration](demo.gif)
