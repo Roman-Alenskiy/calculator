@@ -34,7 +34,7 @@ function inputIsValid(input) {
 
   const { expression } = state
   const expressionLastChar = expression[expression.length - 1]
-  if (((expression === '' || /[+*/.]/.test(expressionLastChar)) && /[+*/.]/.test(input)) || ((/[-]/.test(expressionLastChar)) && (/[-+*/.]/.test(input)))) {
+  if (((expression === '' || /[+*/.]/.test(expressionLastChar)) && /[+*/.]/.test(input)) || (/\./.test(expressionLastChar) && /-/.test(input)) || ((/[-]/.test(expressionLastChar)) && (/[-+*/.]/.test(input)))) {
     return false
   }
   return true

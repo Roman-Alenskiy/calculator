@@ -36,7 +36,7 @@ describe('Calculator', () => {
   describe('#inputIsValid()', () => {
     describe('current state of expression - ""', () => {
       it('should return true for "1"', () => {
-        expect(inputIsValid(1)).to.be.true
+        expect(inputIsValid('1')).to.be.true
       })
 
       it('should return true for "-"', () => {
@@ -64,7 +64,7 @@ describe('Calculator', () => {
       beforeEach(() => { state.update({ expression: '1' }) })
 
       it('should return true for "1"', () => {
-        expect(inputIsValid(1)).to.be.true
+        expect(inputIsValid('1')).to.be.true
       })
 
       it('should return true for "-"', () => {
@@ -85,6 +85,34 @@ describe('Calculator', () => {
 
       it('should return true for "."', () => {
         expect(inputIsValid('.')).to.be.true
+      })
+    })
+
+    describe('current state of expression - "1."', () => {
+      beforeEach(() => { state.update({ expression: '1.' }) })
+
+      it('should return true for "1"', () => {
+        expect(inputIsValid('1')).to.be.true
+      })
+
+      it('should return false for "-"', () => {
+        expect(inputIsValid('-')).to.be.false
+      })
+
+      it('should return false for "+"', () => {
+        expect(inputIsValid('+')).to.be.false
+      })
+
+      it('should return false for "*"', () => {
+        expect(inputIsValid('*')).to.be.false
+      })
+
+      it('should return false for "/"', () => {
+        expect(inputIsValid('/')).to.be.false
+      })
+
+      it('should return false for "."', () => {
+        expect(inputIsValid('.')).to.be.false
       })
     })
   })
