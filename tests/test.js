@@ -5,6 +5,7 @@ const { expect } = chai
 const {
   state,
   inputIsValid,
+  keyboardInputHandler,
   expressionParsing,
   calculateAnswer,
   deleteLastInput,
@@ -30,6 +31,15 @@ describe('Calculator', () => {
       expect(state.operands).to.deep.equal(['10', '-20'])
       expect(state.operators).to.deep.equal(['*'])
       expect(state.isParsingSameNumber).to.be.true
+    })
+  })
+
+  describe('#keyboardInputHandler()', () => {
+    it('should take correct input "1"', () => {
+      const event = { key: 'F1' }
+      expect(() => { keyboardInputHandler(event) }).to.not.throw()
+      expect(state.expression).to.equal('')
+      expect(state.operands).to.deep.equal([])
     })
   })
 

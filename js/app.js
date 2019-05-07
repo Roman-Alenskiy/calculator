@@ -236,7 +236,7 @@ function keyboardInputHandler(event) {
   const input = event.key
 
   switch (true) {
-    case /[+\-*/.\d]/.test(input): {
+    case /^[+\-*/.\d]$/.test(input): {
       performInputHandling(input)
       break
     }
@@ -290,6 +290,7 @@ try {
 
 module.exports = {
   state,
+  keyboardInputHandler,
   inputIsValid,
   expressionParsing,
   calculateAnswer,
